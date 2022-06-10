@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FinancieraModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Cliente">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" />
+          <Property Name="Dirección" Type="varchar" MaxLength="50" />
+          <Property Name="Telefono" Type="varchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="DetallePrestamo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdPrestamo" Type="int" />
+          <Property Name="Cuota" Type="int" />
+          <Property Name="Monto" Type="decimal" Precision="14" Scale="3" />
+        </EntityType>
+        <EntityType Name="Prestamo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fecha" Type="datetime" />
+          <Property Name="IdCliente" Type="int" />
+          <Property Name="Monto" Type="decimal" Precision="14" Scale="3" />
+          <Property Name="Cuotas" Type="int" />
+        </EntityType>
+        <Association Name="FK_DetallePrestamo_Prestamo">
+          <End Role="Prestamo" Type="Self.Prestamo" Multiplicity="0..1" />
+          <End Role="DetallePrestamo" Type="Self.DetallePrestamo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Prestamo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetallePrestamo">
+              <PropertyRef Name="IdPrestamo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Prestamo_Cliente">
+          <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+          <End Role="Prestamo" Type="Self.Prestamo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Prestamo">
+              <PropertyRef Name="IdCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FinancieraModelStoreContainer">
+          <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DetallePrestamo" EntityType="Self.DetallePrestamo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Prestamo" EntityType="Self.Prestamo" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_DetallePrestamo_Prestamo" Association="Self.FK_DetallePrestamo_Prestamo">
+            <End Role="Prestamo" EntitySet="Prestamo" />
+            <End Role="DetallePrestamo" EntitySet="DetallePrestamo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Prestamo_Cliente" Association="Self.FK_Prestamo_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
+            <End Role="Prestamo" EntitySet="Prestamo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FinancieraModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Cliente">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Dirección" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Telefono" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Prestamo" Relationship="Self.FK_Prestamo_Cliente" FromRole="Cliente" ToRole="Prestamo" />
+        </EntityType>
+        <EntityType Name="DetallePrestamo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdPrestamo" Type="Int32" />
+          <Property Name="Cuota" Type="Int32" />
+          <Property Name="Monto" Type="Decimal" Precision="14" Scale="3" />
+          <NavigationProperty Name="Prestamo" Relationship="Self.FK_DetallePrestamo_Prestamo" FromRole="DetallePrestamo" ToRole="Prestamo" />
+        </EntityType>
+        <EntityType Name="Prestamo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fecha" Type="DateTime" Precision="3" />
+          <Property Name="IdCliente" Type="Int32" />
+          <Property Name="Monto" Type="Decimal" Precision="14" Scale="3" />
+          <Property Name="Cuotas" Type="Int32" />
+          <NavigationProperty Name="Cliente" Relationship="Self.FK_Prestamo_Cliente" FromRole="Prestamo" ToRole="Cliente" />
+          <NavigationProperty Name="DetallePrestamo" Relationship="Self.FK_DetallePrestamo_Prestamo" FromRole="Prestamo" ToRole="DetallePrestamo" />
+        </EntityType>
+        <Association Name="FK_Prestamo_Cliente">
+          <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+          <End Role="Prestamo" Type="Self.Prestamo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Prestamo">
+              <PropertyRef Name="IdCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetallePrestamo_Prestamo">
+          <End Role="Prestamo" Type="Self.Prestamo" Multiplicity="0..1" />
+          <End Role="DetallePrestamo" Type="Self.DetallePrestamo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Prestamo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetallePrestamo">
+              <PropertyRef Name="IdPrestamo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FinancieraEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Cliente" EntityType="Self.Cliente" />
+          <EntitySet Name="DetallePrestamo" EntityType="Self.DetallePrestamo" />
+          <EntitySet Name="Prestamo" EntityType="Self.Prestamo" />
+          <AssociationSet Name="FK_Prestamo_Cliente" Association="Self.FK_Prestamo_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
+            <End Role="Prestamo" EntitySet="Prestamo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetallePrestamo_Prestamo" Association="Self.FK_DetallePrestamo_Prestamo">
+            <End Role="Prestamo" EntitySet="Prestamo" />
+            <End Role="DetallePrestamo" EntitySet="DetallePrestamo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FinancieraModelStoreContainer" CdmEntityContainer="FinancieraEntities">
+          <EntitySetMapping Name="Cliente">
+            <EntityTypeMapping TypeName="FinancieraModel.Cliente">
+              <MappingFragment StoreEntitySet="Cliente">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Dirección" ColumnName="Dirección" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DetallePrestamo">
+            <EntityTypeMapping TypeName="FinancieraModel.DetallePrestamo">
+              <MappingFragment StoreEntitySet="DetallePrestamo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdPrestamo" ColumnName="IdPrestamo" />
+                <ScalarProperty Name="Cuota" ColumnName="Cuota" />
+                <ScalarProperty Name="Monto" ColumnName="Monto" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Prestamo">
+            <EntityTypeMapping TypeName="FinancieraModel.Prestamo">
+              <MappingFragment StoreEntitySet="Prestamo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="IdCliente" ColumnName="IdCliente" />
+                <ScalarProperty Name="Monto" ColumnName="Monto" />
+                <ScalarProperty Name="Cuotas" ColumnName="Cuotas" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
